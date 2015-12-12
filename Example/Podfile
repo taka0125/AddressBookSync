@@ -1,0 +1,7 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+use_frameworks!
+
+target 'AddressBookSyncSample', :exclusive => true do
+  pod 'AddressBookSync', :path => '../'
+end
