@@ -37,11 +37,17 @@ class ViewController: UIViewController {
     
     SyncHistory.sharedInstance.verifyUpdating(addressBookRecords)
     
+    let deletedRecordIds = SyncHistory.sharedInstance.fetchAllDeletedRecordIds()
+    print("===== deleted count =====")
+    print(deletedRecordIds.count)
+    
     let records = SyncHistory.sharedInstance.extractNeedSyncRecords(addressBookRecords)
     print("===== extracted count =====")
     print(records.count)
     
     SyncHistory.sharedInstance.markAsSynced(records)
+    
+    SyncHistory.sharedInstance.destoryAllDeletedRecords(deletedRecordIds)
   }
 }
 

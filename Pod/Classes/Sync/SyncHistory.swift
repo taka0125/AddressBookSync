@@ -68,11 +68,23 @@ public struct SyncHistory {
     let recordIds = AddressBookRecordStatus.needSyncRecordIds(realm)
     return records.filter { recordIds.contains($0.id) }
   }
+
+  public func fetchAllDeletedRecordIds() -> [String] {
+    guard let realm = realmInstance() else { return [] }
+
+    return AddressBookRecordStatus.fetchAllDeletedRecordIds(realm)
+  }
   
   public func markAsSynced(records: [AddressBookRecord]) {
     guard let realm = realmInstance() else { return }
     
     AddressBookRecordStatus.markAsSynced(realm, recordIds: records.map { $0.id }, timestamp: NSDate().timeIntervalSince1970)
+  }
+  
+  public func destoryAllDeletedRecords(recordIds: [String]) {
+    guard let realm = realmInstance() else { return }
+    
+    AddressBookRecordStatus.destoryAllDeletedRecords(realm, recordIds: recordIds)
   }
   
   public func clear() {

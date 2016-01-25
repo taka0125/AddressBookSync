@@ -36,6 +36,11 @@ public final class AddressBookRecordStatus: Object {
     return objects.filter("updatedAt >= syncedAt and deleted == false").map { $0.recordId }
   }
 
+  public class func fetchAllDeletedRecordIds(realm: Realm) -> [String] {
+    let objects = realm.objects(self)
+    return objects.filter("deleted == true").map { $0.recordId }
+  }
+
   public class func markAsDelete(realm: Realm, timestamp: NSTimeInterval) {
     try! realm.write {
       let results = realm.objects(self).filter("verifiedAt < %lf", timestamp)
@@ -52,6 +57,16 @@ public final class AddressBookRecordStatus: Object {
     try! realm.write {
       results.forEach { result in
         result.syncedAt = timestamp
+      }
+    }
+  }
+
+  public class func destoryAllDeletedRecords(realm: Realm, recordIds: [String]) {
+    let results = realm.objects(self).filter(NSPredicate(format: "deleted == true and recordId IN %@", recordIds))
+
+    try! realm.write {
+      results.forEach { result in
+        realm.delete(result)
       }
     }
   }

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "AddressBookSync"
-  s.version          = "0.1.0"
+  s.version          = "0.2.0"
   s.summary          = "Address Book sync library"
   s.homepage         = "https://github.com/taka0125/AddressBookSync"
   s.license          = 'MIT'
