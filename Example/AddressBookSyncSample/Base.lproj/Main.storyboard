@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -18,26 +18,35 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oSM-Xr-dui">
-                                <rect key="frame" x="284" y="263" width="33" height="30"/>
+                                <rect key="frame" x="284" y="211" width="33" height="30"/>
                                 <state key="normal" title="scan"/>
                                 <connections>
                                     <action selector="scan" destination="BYZ-38-t0r" eventType="touchUpInside" id="OrT-4a-1yj"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ugb-4E-h7Y">
-                                <rect key="frame" x="284" y="337" width="32" height="30"/>
+                                <rect key="frame" x="284" y="285" width="32" height="30"/>
                                 <state key="normal" title="sync"/>
                                 <connections>
                                     <action selector="sync" destination="BYZ-38-t0r" eventType="touchUpInside" id="bib-qh-FcS"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JcG-vr-zl1">
+                                <rect key="frame" x="275" y="359" width="51" height="30"/>
+                                <state key="normal" title="remove"/>
+                                <connections>
+                                    <action selector="remove" destination="BYZ-38-t0r" eventType="touchUpInside" id="b3h-1X-XDZ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="ugb-4E-h7Y" firstAttribute="top" secondItem="oSM-Xr-dui" secondAttribute="bottom" constant="44" id="QZt-p5-ncp"/>
-                            <constraint firstItem="oSM-Xr-dui" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="fQO-f2-tzQ"/>
-                            <constraint firstItem="oSM-Xr-dui" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-22" id="qkK-61-x6I"/>
-                            <constraint firstItem="ugb-4E-h7Y" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zaY-pl-EIh"/>
+                            <constraint firstItem="ugb-4E-h7Y" firstAttribute="top" secondItem="oSM-Xr-dui" secondAttribute="bottom" constant="44" id="2WT-8e-utc"/>
+                            <constraint firstItem="JcG-vr-zl1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="G7Y-rm-kfy"/>
+                            <constraint firstItem="ugb-4E-h7Y" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="RM0-gP-TV4"/>
+                            <constraint firstItem="oSM-Xr-dui" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Vhq-id-6tZ"/>
+                            <constraint firstItem="ugb-4E-h7Y" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="hHa-Ts-mdd"/>
+                            <constraint firstItem="JcG-vr-zl1" firstAttribute="top" secondItem="ugb-4E-h7Y" secondAttribute="bottom" constant="44" id="oCG-bq-kxF"/>
                         </constraints>
                     </view>
                 </viewController>

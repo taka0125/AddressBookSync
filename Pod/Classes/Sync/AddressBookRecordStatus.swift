@@ -10,64 +10,59 @@
 import Foundation
 import RealmSwift
 
-public final class AddressBookRecordStatus: Object {
-  public dynamic var recordId = ""
-  public dynamic var hashCode = ""
-  public dynamic var deleted = false
-  public dynamic var verifiedAt: Double = 0.0
-  public dynamic var updatedAt: Double = 0.0
-  public dynamic var syncedAt: Double = 0.0
+final class AddressBookRecordStatus: Object {
+  dynamic var recordId = ""
+  dynamic var hashCode = ""
+  dynamic var deleted = false
+  dynamic var verifiedAt: Double = 0.0
+  dynamic var updatedAt: Double = 0.0
+  dynamic var syncedAt: Double = 0.0
   
-  public override static func primaryKey() -> String? {
+  override static func primaryKey() -> String? {
     return "recordId"
   }
   
-  public func isChanged(record: AddressBookRecord) -> Bool {
+  override static func indexedProperties() -> [String] {
+    return ["deleted"]
+  }
+  
+  func isChanged(record: AddressBookRecord) -> Bool {
     guard let hashCode = record.hashCode() else { return false }
     return self.hashCode != hashCode
   }
   
-  public class func find(realm: Realm, recordId: String) -> AddressBookRecordStatus? {
-    return realm.objectForPrimaryKey(self, key: recordId)
+  class func find(recordId: String) -> AddressBookRecordStatus? {
+    return ABSRealm.instance().objectForPrimaryKey(self, key: recordId)
   }
   
-  public class func needSyncRecordIds(realm: Realm) -> [String] {
-    let objects = realm.objects(self)
+  class func needSyncRecordIds() -> [String] {
+    let objects = ABSRealm.instance().objects(self)
     return objects.filter("updatedAt >= syncedAt and deleted == false").map { $0.recordId }
   }
 
-  public class func fetchAllDeletedRecordIds(realm: Realm) -> [String] {
-    let objects = realm.objects(self)
+  class func fetchAllDeletedRecordIds() -> [String] {
+    let objects = ABSRealm.instance().objects(self)
     return objects.filter("deleted == true").map { $0.recordId }
   }
 
-  public class func markAsDelete(realm: Realm, timestamp: NSTimeInterval) {
-    try! realm.write {
-      let results = realm.objects(self).filter("verifiedAt < %lf", timestamp)
-      results.forEach { result in
-        result.deleted = true
-        result.updatedAt = timestamp
-      }
-    }
+  class func markAsDelete(timestamp: NSTimeInterval) {
+    let realm = ABSRealm.instance()
+    let results = realm.objects(self).filter("verifiedAt < %lf", timestamp)
+    results.setValue(true, forKeyPath: "deleted")
+    results.setValue(timestamp, forKeyPath: "updatedAt")
   }
   
-  public class func markAsSynced(realm: Realm, recordIds: [String], timestamp: NSTimeInterval) {
-    let results = realm.objects(self).filter(NSPredicate(format: "recordId IN %@", recordIds))
+  class func markAsSynced(recordIds: [String], timestamp: NSTimeInterval) {
+    let realm = ABSRealm.instance()
+    let results = realm.objects(self).filter("recordId IN %@", recordIds)
     
-    try! realm.write {
-      results.forEach { result in
-        result.syncedAt = timestamp
-      }
-    }
+    results.setValue(timestamp, forKeyPath: "syncedAt")
   }
 
-  public class func destoryAllDeletedRecords(realm: Realm, recordIds: [String]) {
-    let results = realm.objects(self).filter(NSPredicate(format: "deleted == true and recordId IN %@", recordIds))
+  class func destoryAllDeletedRecords(recordIds: [String]) {
+    let realm = ABSRealm.instance()
+    let results = realm.objects(self).filter("deleted == true and recordId IN %@", recordIds)
 
-    try! realm.write {
-      results.forEach { result in
-        realm.delete(result)
-      }
-    }
+    realm.delete(results)
   }
 }

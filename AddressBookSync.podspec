@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "AddressBookSync"
-  s.version          = "0.2.0"
+  s.version          = "0.3.0"
   s.summary          = "Address Book sync library"
   s.homepage         = "https://github.com/taka0125/AddressBookSync"
   s.license          = 'MIT'
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.subspec 'Sync' do |ss|
     ss.source_files = 'Pod/Classes/Sync/*.swift'
     ss.dependency 'AddressBookSync/Scan'
-    ss.dependency 'Realm'
-    ss.dependency 'RealmSwift'
+    ss.dependency 'Realm', '>= 0.98'
+    ss.dependency 'RealmSwift', '>= 0.98'
   end
 end
