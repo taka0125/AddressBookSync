@@ -49,6 +49,10 @@ class ViewController: UIViewController {
     
     SyncHistory.sharedInstance.destoryAllDeletedRecords(deletedRecordIds)
   }
+  
+  @IBAction func remove() {
+    ABSRealm.removeStore()
+  }
 }
 
 extension ViewController {

@@ -13,21 +13,8 @@ import RealmSwift
 public struct SyncHistory {
   public static let sharedInstance = SyncHistory()
   
-  private var config: Realm.Configuration
-  
-  private init() {
-    var config = Realm.Configuration()
-    config.path = NSURL.fileURLWithPath(config.path!)
-      .URLByDeletingLastPathComponent?
-      .URLByAppendingPathComponent("SyncHistoryStore")
-      .URLByAppendingPathExtension("realm")
-      .path
-    
-    self.config = config
-  }
-  
   public func verifyUpdating(records: [AddressBookRecord]) {
-    guard let realm = realmInstance() else { return }
+    let realm = ABSRealm.instance()
     
     let verifiedAt = NSDate().timeIntervalSince1970
     
@@ -35,7 +22,7 @@ public struct SyncHistory {
       records.forEach { record in
         guard let hashCode = record.hashCode() else { return }
         
-        if let status = AddressBookRecordStatus.find(realm, recordId: record.id) {
+        if let status = AddressBookRecordStatus.find(record.id) {
           status.verifiedAt = verifiedAt
           status.deleted = false
           
@@ -57,45 +44,36 @@ public struct SyncHistory {
         
         realm.add(status)
       }
+      
+      AddressBookRecordStatus.markAsDelete(verifiedAt)
     }
-    
-    AddressBookRecordStatus.markAsDelete(realm, timestamp: verifiedAt)
   }
   
   public func extractNeedSyncRecords(records: [AddressBookRecord]) -> [AddressBookRecord] {
-    guard let realm = realmInstance() else { return [] }
-
-    let recordIds = AddressBookRecordStatus.needSyncRecordIds(realm)
+    let recordIds = AddressBookRecordStatus.needSyncRecordIds()
     return records.filter { recordIds.contains($0.id) }
   }
 
   public func fetchAllDeletedRecordIds() -> [String] {
-    guard let realm = realmInstance() else { return [] }
-
-    return AddressBookRecordStatus.fetchAllDeletedRecordIds(realm)
+    return AddressBookRecordStatus.fetchAllDeletedRecordIds()
   }
   
   public func markAsSynced(records: [AddressBookRecord]) {
-    guard let realm = realmInstance() else { return }
-    
-    AddressBookRecordStatus.markAsSynced(realm, recordIds: records.map { $0.id }, timestamp: NSDate().timeIntervalSince1970)
-  }
-  
-  public func destoryAllDeletedRecords(recordIds: [String]) {
-    guard let realm = realmInstance() else { return }
-    
-    AddressBookRecordStatus.destoryAllDeletedRecords(realm, recordIds: recordIds)
-  }
-  
-  public func clear() {
-    guard let realm = realmInstance() else { return }
-
-    try! realm.write {
-      realm.deleteAll()
+    try! ABSRealm.instance().write {
+      AddressBookRecordStatus.markAsSynced(records.map { $0.id }, timestamp: NSDate().timeIntervalSince1970)
     }
   }
   
-  public func realmInstance() -> Realm? {
-    return try? Realm(configuration: config)
+  public func destoryAllDeletedRecords(recordIds: [String]) {
+    try! ABSRealm.instance().write {
+      AddressBookRecordStatus.destoryAllDeletedRecords(recordIds)
+    }
+  }
+  
+  public func clear() {
+    let realm = ABSRealm.instance()
+    try! realm.write {
+      realm.deleteAll()
+    }
   }
 }
