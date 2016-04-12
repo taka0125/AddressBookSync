@@ -22,9 +22,16 @@ public struct AddressBookFrameworkAdapter: AdapterProtocol {
   }
   
   public func requestAccess(completionHandler: (Bool, ErrorType?) -> Void) {
-    let addressBookRef = buildAddressBookRef()
-    ABAddressBookRequestAccessWithCompletion(addressBookRef) { (granted, error) in
-      completionHandler(granted, error == nil ? nil : AddressBook.Error.RequestAccessFailed)
+    switch authorizationStatus() {
+    case .Authorized:
+      completionHandler(true, nil)
+    case .NotDetermined:
+      let addressBookRef = buildAddressBookRef()
+      ABAddressBookRequestAccessWithCompletion(addressBookRef) { (granted, error) in
+        completionHandler(granted, error == nil ? nil : AddressBook.Error.RequestAccessFailed)
+      }
+    default:
+      completionHandler(false, AddressBook.Error.RequestAccessFailed)
     }
   }
   
