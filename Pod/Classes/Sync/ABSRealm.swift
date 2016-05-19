@@ -13,11 +13,10 @@ import RealmSwift
 public struct ABSRealm {
   private static var config: Realm.Configuration = {
     var config = Realm.Configuration(objectTypes: [AddressBookRecordStatus.self])
-    config.path = NSURL.fileURLWithPath(config.path!)
+    config.fileURL = config.fileURL?
       .URLByDeletingLastPathComponent?
       .URLByAppendingPathComponent("SyncHistoryStore")
       .URLByAppendingPathExtension("realm")
-      .path
     return config
   }()
   
@@ -26,19 +25,18 @@ public struct ABSRealm {
   }
   
   public static func removeStore() {
-    guard let pathString = config.path else { return }
+    guard let realmURL = config.fileURL else { return }
     
-    let manager = NSFileManager.defaultManager()
-    let path = NSURL(fileURLWithPath: pathString)
-    let realmPaths = [
-      path,
-      path.URLByAppendingPathExtension("lock"),
-      path.URLByAppendingPathExtension("log_a"),
-      path.URLByAppendingPathExtension("log_b"),
-      path.URLByAppendingPathExtension("note")
+    let realmURLs = [
+      realmURL,
+      realmURL.URLByAppendingPathExtension("lock"),
+      realmURL.URLByAppendingPathExtension("log_a"),
+      realmURL.URLByAppendingPathExtension("log_b"),
+      realmURL.URLByAppendingPathExtension("note")
     ]
     
-    realmPaths.forEach { URL in
+    let manager = NSFileManager.defaultManager()
+    realmURLs.forEach { URL in
       do {
         try manager.removeItemAtURL(URL)
       } catch {
