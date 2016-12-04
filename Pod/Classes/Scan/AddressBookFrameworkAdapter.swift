@@ -42,8 +42,9 @@ public struct AddressBookFrameworkAdapter: AdapterProtocol {
     
     allContacts.forEach { contact in
       let id = "\(ABRecordGetRecordID(contact))"
-      let firstName = ABRecordCopyValue(contact, kABPersonFirstNameProperty).takeRetainedValue() as! String
-      let lastName = ABRecordCopyValue(contact, kABPersonLastNameProperty).takeRetainedValue() as! String
+      
+      let firstName = recordCopyStringValue(contact, kABPersonFirstNameProperty) ?? ""
+      let lastName = recordCopyStringValue(contact, kABPersonLastNameProperty) ?? ""
       
       let phoneNumbersRef = ABRecordCopyValue(contact, kABPersonPhoneProperty).takeUnretainedValue() as ABMultiValueRef
       let phoneNumbers = Array(0..<ABMultiValueGetCount(phoneNumbersRef))
@@ -61,6 +62,13 @@ public struct AddressBookFrameworkAdapter: AdapterProtocol {
     }
     
     return records
+  }
+}
+
+extension AddressBookFrameworkAdapter {
+  private func recordCopyStringValue(record: ABRecord, _ property: ABPropertyID) -> String? {
+    guard let ref = ABRecordCopyValue(record, property) else { return nil }
+    return ref.takeRetainedValue() as? String
   }
 }
 
